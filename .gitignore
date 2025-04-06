@@ -1,3 +1,6 @@
 .env.txt
 .env.example
 .DS_Store
+venv/
+__pycache__/
+*.pyc
