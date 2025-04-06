@@ -129,6 +129,23 @@ Add dynamic sorting, multi-attribute filtering, and advanced search features to 
 Comprehensive Testing:
 Expand unit and integration tests to further ensure robustness and maintainability.
 
+## Challenges & Learnings
+
+One of the key challenges I faced during this project was the limitation of open LLM APIs. I initially experimented with OpenAI, Google Gemini, and Anthropic Claude; however, each of these services imposed request limits that I quickly exceeded during testing. This forced me to explore alternatives, and I ultimately switched to using Replicate’s free, open-source LLMs.
+
+**Key Challenges:**
+
+- **LLM API Request Limits:**  
+  OpenAI, Gemini, and Claude all have strict limits on API requests, which restricted my ability to thoroughly test and refine the recommendation system. This limitation significantly impacted the prompt engineering process and overall testing.
+
+- **Transition to Replicate:**  
+  After exceeding the limits of the aforementioned services, I switched to Replicate’s API. Although this involved adjusting the integration and prompt parsing logic, it ultimately allowed me to work without hitting request ceilings, ensuring a smoother development and testing process.
+
+- **Robust Prompt Engineering:**  
+  Crafting a prompt that could consistently produce structured, valid JSON from the LLM remained challenging, especially when using multiple API providers. Iterative testing and refinement, along with a robust JSON extraction method, were essential to overcome these issues.
+
+Through this process, I learned the importance of balancing API capabilities with project requirements, and how to adapt my solution when faced with external limitations. This experience has equipped me with valuable insights into LLM integration and prompt engineering in constrained environments.
+
 ## Conclusion
 This project showcases my ability to build a scalable, AI-powered product recommendation engine using robust prompt engineering techniques and a modular backend design. The decision to use Streamlit for the frontend reflects my focus on delivering a functional and efficient solution quickly, allowing me to concentrate on the core technical challenges.
 
