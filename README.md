@@ -65,7 +65,7 @@ I used **Streamlit** for the frontend due to its rapid prototyping capabilities 
 
 1. **Clone the Repository:**
 ```bash
-   git clone https://github.com/yourusername/ai-product-recommendation-engine.git
+   git clone https://github.com/kollaikal/ai-product-recommendation-engine.git
    cd ai-product-recommendation-engine/backend
 ```
 2. Create and Activate a Virtual Environment:
