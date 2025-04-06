@@ -1,183 +1,133 @@
-# AI-Powered Product Recommendation Engine - Backend
+# AI-Powered Product Recommendation Engine
 
-This is the backend component of the AI-Powered Product Recommendation Engine take-home assignment. It provides a FastAPI API that interfaces with an LLM to generate personalized product recommendations based on user preferences and browsing history.
+This project is designed to showcase my ability to work with large language models (LLMs), engineer effective prompts, design robust backend services, and build a functional user interface for an eCommerce recommendation system.
 
-## Project Structure
+## Overview
 
-```
-backend/
-│
-├── app.py               # Main FastAPI application
-├── requirements.txt     # Python dependencies
-├── config.py            # Configuration (add your API keys here)
-├── data/
-│   └── products.json    # Sample product catalog
-│
-├── services/
-│   ├── __init__.py
-│   ├── llm_service.py   # Service for LLM interactions (implement this)
-│   └── product_service.py  # Service for product data operations
-│
-└── README.md            # This file
-```
+The goal of this project is to build a simplified product recommendation system that generates personalized recommendations based on user preferences and browsing history. The system leverages an LLM via the Replicate API (using the `meta/meta-llama-3-8b-instruct` model) to produce recommendations in a structured JSON format.
+
+While the starter kit provided a full-stack structure (with a React frontend), I chose to focus on the backend—my area of expertise—and used Streamlit for the frontend. This allowed me to rapidly prototype a functional UI while dedicating significant effort to prompt engineering, API integration, and error handling.
+
+## Features
+
+- **Context-Rich Recommendations:**  
+  Combines user preferences, browsing history, and a sample product catalog to build detailed prompts for the LLM.
+  
+- **Structured Output:**  
+  The system instructs the LLM to output recommendations in a strict JSON format (with product ID, explanation, and confidence score) for easier parsing.
+
+- **Robust Error Handling:**  
+  Implements extensive error handling to manage API failures and parsing issues, ensuring the application remains stable.
+
+- **Advanced Filtering:**  
+  The product catalog is filtered on the frontend based on user-selected criteria (price range, categories, and brands).
+
+- **Caching:**  
+  Caches LLM responses based on a hash of the prompt to reduce redundant API calls and improve performance.
+
+## Project Architecture
+
+### Backend
+
+- **config.py:**  
+  Loads environment variables (e.g., the Replicate API token) to manage sensitive information securely.
+
+- **services/llm_service.py:**  
+  Contains the `LLMService` class, which is responsible for:
+  - Constructing prompts from user preferences, browsing history, and product data.
+  - Calling the Replicate API to generate recommendations.
+  - Parsing the model's output (even when it contains extra text) to extract valid JSON.
+  - Caching responses for performance optimization.
+
+- **data/products.json:**  
+  A sample product catalog containing details such as product ID, name, category, price, brand, description, features, rating, inventory, and tags.
+
+- **app.py (Streamlit):**  
+  Serves as the main entry point and UI layer. It:
+  - Displays a filtered product catalog.
+  - Allows users to set preferences and simulate browsing history.
+  - Shows personalized product recommendations with explanations and confidence scores.
+
+### Frontend
+
+I used **Streamlit** for the frontend due to its rapid prototyping capabilities and my familiarity with it. This choice allowed me to deliver a clean, interactive UI without the overhead of a full React implementation.
+
 
 ## Setup Instructions
 
-1. Create a virtual environment:
-   ```
-   python -m venv venv
-   ```
+### Prerequisites
 
-2. Activate the virtual environment:
-   - Windows: `venv\Scripts\activate`
-   - macOS/Linux: `source venv/bin/activate`
+- Python 3.10 or later
+- [pip](https://pip.pypa.io/en/stable/)
+- (Optional) A virtual environment tool (e.g., `venv`)
 
-3. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+### Backend Setup
 
-4. Create a `.env` file in the backend directory with your OpenAI API key:
-   ```
-   OPENAI_API_KEY=your_openai_api_key_here
-   MODEL_NAME=gpt-3.5-turbo
-   MAX_TOKENS=1000
-   TEMPERATURE=0.7
-   DATA_PATH=data/products.json
-   ```
-
-5. Run the application:
-   ```
-   uvicorn app:app --host 0.0.0.0 --port 5000 --reload
-   ```
-
-The server will start on `http://localhost:5000`. You can access the automatic API documentation at `http://localhost:5000/docs`.
-
-## API Endpoints
-
-### GET /api/products
-Returns the full product catalog.
-
-#### Response
-```json
-[
-  {
-    "id": "prod001",
-    "name": "Ultra-Comfort Running Shoes",
-    "category": "Footwear",
-    "subcategory": "Running",
-    "price": 89.99,
-    "brand": "SportsFlex",
-    "description": "...",
-    "features": ["..."],
-    "rating": 4.7,
-    "inventory": 45,
-    "tags": ["..."]
-  },
-  ...
-]
+1. **Clone the Repository:**
+```bash
+   git clone https://github.com/yourusername/ai-product-recommendation-engine.git
+   cd ai-product-recommendation-engine/backend
 ```
-
-### POST /api/recommendations
-Generates personalized product recommendations based on user preferences and browsing history.
-
-#### Request Body
-```json
-{
-  "preferences": {
-    "priceRange": "all", // Options: "0-50", "50-100", "100+", "all"
-    "categories": ["Electronics", "Home"], // Array of category names
-    "brands": ["SoundWave", "FitTech"] // Array of brand names
-  },
-  "browsing_history": ["prod002", "prod007"] // Array of product IDs
-}
+2. Create and Activate a Virtual Environment:
 ```
-
-#### Response
-```json
-{
-  "recommendations": [
-    {
-      "product": {
-        "id": "prod009",
-        "name": "Bluetooth Portable Speaker",
-        "category": "Electronics",
-        "subcategory": "Audio",
-        "price": 69.99,
-        "brand": "SoundWave",
-        "description": "...",
-        "features": ["..."],
-        "rating": 4.4,
-        "inventory": 50,
-        "tags": ["..."]
-      },
-      "explanation": "Based on your interest in audio devices and the SoundWave brand...",
-      "confidence_score": 8
-    },
-    ...
-  ],
-  "count": 5
-}
+python -m venv venv
+# On macOS/Linux:
+source venv/bin/activate
+# On Windows:
+venv\Scripts\activate
 ```
-
-## Implementation Tasks
-
-As part of this assignment, you need to implement the following components:
-
-### 1. LLM Service (services/llm_service.py)
-
-The LLM service is responsible for generating personalized product recommendations. You need to implement:
-
-- **`_create_recommendation_prompt`**: Design an effective prompt for the LLM that:
-  - Incorporates user preferences (categories, price range, brands)
-  - Leverages browsing history to understand user interests
-  - Provides context about the available products
-  - Specifies the expected response format
-
-- **`_parse_recommendation_response`**: Parse the LLM's response to extract:
-  - Product recommendations
-  - Explanations for each recommendation
-  - Confidence scores (if applicable)
-
-Focus on prompt engineering to get relevant, accurate recommendations with meaningful explanations.
-
-### 2. Error Handling
-
-Implement robust error handling throughout the API, including:
-- Invalid input validation
-- LLM API error handling
-- Graceful error responses
-
-## Testing Your Implementation
-
-A test script (`candidate_test.py`) is provided in the root directory to help you test your implementation. Run it after starting your Flask server:
-
+3. Install Dependencies:
 ```
-python candidate_test.py
+pip install -r requirements.txt
 ```
+4. Configure Environment Variables:
 
-## Evaluation Criteria
+Create a .env file in the project root (or in the backend folder) with the following content:
+```
+REPLICATE_API_TOKEN=your_replicate_api_token_here
+```
+I have have used Replicate API. You can replace it with any other LLM API of your choice. 
 
-Your backend implementation will be evaluated based on:
+5. Run the Application:
+```
+streamlit run app.py
+```
+The application should open in your browser at http://localhost:8501.
 
-1. **Prompt Engineering Quality (50%)**
-   - Effectiveness of prompts in generating relevant recommendations
-   - Context handling and optimization
-   - Clarity and usefulness of recommendation explanations
+## Frontend (Streamlit)
+The Streamlit UI allows you to:
 
-2. **API Design and Implementation (30%)**
-   - RESTful API design and implementation
-   - Error handling and edge cases
-   - Response time and efficiency
+Select user preferences (price range, categories, brands) from a sidebar.
 
-3. **Code Quality (20%)**
-   - Code readability and organization
-   - Documentation and comments
-   - Error handling approaches
+View a product catalog filtered by your selected criteria.
 
-## Tips for Success
+Simulate browsing history by clicking on products.
 
-- **Focus on prompt engineering**: This is the most critical part of the assignment. Consider how to structure your prompts to get the best recommendations.
-- **Test with various scenarios**: Try different combinations of preferences and browsing history to ensure your implementation adapts well.
-- **Consider token limitations**: Be mindful of the LLM's context window limitations when designing your prompts.
-- **Document your approach**: In addition to code comments, consider adding a section in your project README explaining your prompt engineering strategy.
+Receive personalized recommendations generated by the LLM, complete with explanations and confidence scores.
+
+## Testing & Validation
+Local Testing:
+I tested the LLM service with dummy data to ensure the output is valid JSON and maps correctly to the product catalog.
+
+## End-to-End Testing:
+The complete system was tested via the Streamlit UI to simulate real user interactions.
+
+## Edge Cases:
+Extensive error handling has been implemented to gracefully handle cases where the API response is incomplete or contains extraneous text.
+
+## Future Enhancements
+User Authentication:
+Incorporate authentication to allow persistent user profiles and personalized recommendation histories.
+
+Persistent Caching:
+Move from in-memory caching to a persistent caching mechanism for production use.
+
+Enhanced Filtering & Sorting:
+Add dynamic sorting, multi-attribute filtering, and advanced search features to the product catalog.
+
+Comprehensive Testing:
+Expand unit and integration tests to further ensure robustness and maintainability.
+
+## Conclusion
+This project showcases my ability to build a scalable, AI-powered product recommendation engine using robust prompt engineering techniques and a modular backend design. The decision to use Streamlit for the frontend reflects my focus on delivering a functional and efficient solution quickly, allowing me to concentrate on the core technical challenges.
+
