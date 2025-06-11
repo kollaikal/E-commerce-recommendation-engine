@@ -1,5 +1,5 @@
 
-# AI-Powered Product Recommendation Engine
+# AI-Powered E-commerce Recommendation Engine
 
 This project is designed to showcase my ability to work with large language models (LLMs), engineer effective prompts, design robust backend services, and build a functional user interface for an eCommerce recommendation system.
 
